@@ -64,9 +64,11 @@ class Container:
         return value
 
     def __contains__(self, key) -> bool:
-        contains = key in self._services or key in self._factories or key in self._aliases
-
-        if contains:
+        if (
+            contains := key in self._services
+            or key in self._factories
+            or key in self._aliases
+        ):
             return contains
 
         if self._has_alias_list_for(key):

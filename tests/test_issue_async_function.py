@@ -26,7 +26,7 @@ def test_resolve_kwargs_in_async_function() -> None:
 def test_resolve_no_parameters_in_async() -> None:
     @inject
     async def example_async(request) -> Response:
-        return Response(f"Hello Bob")
+        return Response("Hello Bob")
 
     application = Starlette(routes=[Route("/test", example_async, methods=["GET"])])
     test_client = TestClient(application)
