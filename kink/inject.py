@@ -35,14 +35,17 @@ class Parameter:
 
 def _inspect_function_arguments(function: Callable,) -> Tuple[Tuple[str, ...], Dict[str, Parameter]]:
     parameters_name: Tuple[str, ...] = tuple(signature(function).parameters.keys())
-    parameters = {}
-
-    for name, parameter in signature(function).parameters.items():
-        parameters[name] = Parameter(
+    parameters = {
+        name: Parameter(
             parameter.name,
             parameter.annotation,
-            parameter.default if parameter.default is not InspectParameter.empty else Undefined,
+            parameter.default
+            if parameter.default is not InspectParameter.empty
+            else Undefined,
         )
+        for name, parameter in signature(function).parameters.items()
+    }
+
 
     return parameters_name, parameters
 
@@ -151,13 +154,10 @@ def inject(
             )
             if use_factory:
                 container.factories[_service] = lambda _di: _service()
-                if alias:
-                    container.add_alias(alias, _service)
             else:
                 container[_service] = lambda _di: _service()
-                if alias:
-                    container.add_alias(alias, _service)
-
+            if alias:
+                container.add_alias(alias, _service)
             return _service
 
         service_function = _decorate(bind or {}, _service, container)
